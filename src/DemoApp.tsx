@@ -41,9 +41,11 @@ function DemoRoutes() {
 	);
 }
 
+const routerBasename = import.meta.env.BASE_URL.replace(/\/$/, "");
+
 export function DemoApp() {
 	return (
-		<BrowserRouter>
+		<BrowserRouter basename={routerBasename || undefined}>
 			<DemoRoutes />
 		</BrowserRouter>
 	);
