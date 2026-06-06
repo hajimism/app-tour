@@ -1,0 +1,214 @@
+@layer app-tour {
+	:root {
+		--app-tour-z-overlay: 9998;
+		--app-tour-z-tooltip: 9999;
+		--app-tour-z-pointer: 10000;
+
+		/* Tooltip tokens — default to shadcn theme, override in :root as needed */
+		--app-tour-tooltip-bg: var(--popover);
+		--app-tour-tooltip-fg: var(--popover-foreground);
+		--app-tour-tooltip-muted-fg: var(--muted-foreground);
+		--app-tour-tooltip-border: var(--border);
+		--app-tour-tooltip-radius: var(--radius);
+		--app-tour-tooltip-shadow: var(--shadow-md);
+		--app-tour-tooltip-width: 18rem;
+
+		--app-tour-step-error-bg: var(--background);
+		--app-tour-step-error-fg: var(--foreground);
+		--app-tour-step-error-muted-fg: var(--muted-foreground);
+		--app-tour-step-error-border: color-mix(
+			in oklch,
+			var(--destructive) 30%,
+			transparent
+		);
+		--app-tour-step-error-title-fg: var(--destructive);
+	}
+
+	@property --app-tour-spot-top {
+		syntax: "<length>";
+		inherits: false;
+		initial-value: 0px;
+	}
+
+	@property --app-tour-spot-left {
+		syntax: "<length>";
+		inherits: false;
+		initial-value: 0px;
+	}
+
+	@property --app-tour-spot-width {
+		syntax: "<length>";
+		inherits: false;
+		initial-value: 0px;
+	}
+
+	@property --app-tour-spot-height {
+		syntax: "<length>";
+		inherits: false;
+		initial-value: 0px;
+	}
+
+	.app-tour-spotlight-root {
+		z-index: var(--app-tour-z-overlay);
+		pointer-events: none;
+	}
+
+	@keyframes app-tour-overlay-fade-in {
+		from {
+			opacity: 0;
+		}
+		to {
+			opacity: 1;
+		}
+	}
+
+	.app-tour-spotlight-root--fade-in {
+		opacity: 0;
+		animation: app-tour-overlay-fade-in var(--app-tour-overlay-fade-ms, 400ms)
+			ease-out forwards;
+	}
+
+	.app-tour-backdrop-panel--fade-in {
+		opacity: 0;
+		animation: app-tour-overlay-fade-in var(--app-tour-overlay-fade-ms, 400ms)
+			ease-out forwards;
+	}
+
+	.app-tour-spotlight-dim {
+		fill: var(--app-tour-overlay-color);
+	}
+
+	.app-tour-spotlight-hole {
+		transition:
+			x var(--app-tour-highlight-transition-ms, 400ms) ease-in-out,
+			y var(--app-tour-highlight-transition-ms, 400ms) ease-in-out,
+			width var(--app-tour-highlight-transition-ms, 400ms) ease-in-out,
+			height var(--app-tour-highlight-transition-ms, 400ms) ease-in-out;
+	}
+
+	.app-tour-spotlight-hole--static {
+		transition: none;
+	}
+
+	.app-tour-pointer {
+		z-index: var(--app-tour-z-pointer);
+		pointer-events: none;
+		transition: transform var(--app-tour-pointer-transition-ms, 300ms) ease;
+	}
+
+	@keyframes app-tour-pointer-ripple {
+		0% {
+			transform: translate(-50%, -50%) scale(0.55);
+			opacity: 0.32;
+		}
+		100% {
+			transform: translate(-50%, -50%) scale(2.4);
+			opacity: 0;
+		}
+	}
+
+	.app-tour-pointer-ripple {
+		position: absolute;
+		left: 50%;
+		top: 50%;
+		width: 1.75rem;
+		height: 1.75rem;
+		border-radius: 50%;
+		border: 1.5px solid var(--app-tour-pointer-pulse-color);
+		opacity: 0;
+		animation: app-tour-pointer-ripple 2s cubic-bezier(0.22, 0.61, 0.36, 1)
+			infinite;
+	}
+
+	.app-tour-pointer-ripple:nth-child(1) {
+		animation-delay: 0s;
+	}
+
+	.app-tour-pointer-ripple:nth-child(2) {
+		animation-delay: 1s;
+	}
+
+	.app-tour-tooltip {
+		width: var(--app-tour-tooltip-width);
+		background-color: var(--app-tour-tooltip-bg);
+		color: var(--app-tour-tooltip-fg);
+		border-color: var(--app-tour-tooltip-border);
+		border-radius: var(--app-tour-tooltip-radius);
+		box-shadow: var(--app-tour-tooltip-shadow);
+		animation-duration: var(--app-tour-tooltip-fade-ms, 300ms);
+	}
+
+	.app-tour-tooltip-title {
+		color: var(--app-tour-tooltip-fg);
+	}
+
+	.app-tour-tooltip-description {
+		color: var(--app-tour-tooltip-muted-fg);
+	}
+
+	.app-tour-tooltip-progress {
+		color: var(--app-tour-tooltip-muted-fg);
+	}
+
+	.app-tour-step-error {
+		background-color: var(--app-tour-step-error-bg);
+		color: var(--app-tour-step-error-fg);
+		border-color: var(--app-tour-step-error-border);
+	}
+
+	.app-tour-step-error-title {
+		color: var(--app-tour-step-error-title-fg);
+	}
+
+	.app-tour-step-error-meta {
+		color: var(--app-tour-step-error-muted-fg);
+	}
+
+	.app-tour-step-error-message {
+		color: var(--app-tour-step-error-fg);
+	}
+
+	.app-tour-sr-only {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		padding: 0;
+		margin: -1px;
+		overflow: hidden;
+		clip: rect(0, 0, 0, 0);
+		white-space: nowrap;
+		border: 0;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.app-tour-spotlight-hole {
+			transition: none;
+		}
+
+		.app-tour-spotlight-root--fade-in,
+		.app-tour-backdrop-panel--fade-in {
+			animation: none;
+			opacity: 1;
+		}
+
+		.app-tour-pointer {
+			transition: none;
+		}
+
+		.app-tour-pointer-ripple {
+			animation: none;
+			opacity: 0.2;
+			transform: translate(-50%, -50%) scale(1.3);
+		}
+
+		.app-tour-pointer-ripple:nth-child(2) {
+			display: none;
+		}
+
+		.app-tour-tooltip {
+			animation: none;
+			opacity: 1;
+			transform: none;
+		}
+	}
+}
